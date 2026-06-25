@@ -15,13 +15,24 @@ CREATE TABLE disciplina (
     id_disciplina INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     id_curso INT UNSIGNED,
     nome VARCHAR(100) NOT NULL,
+    departamento ENUM('ARTES', 'CIÊNCIAS BIOLÓGICAS', 'CIÊNCIAS EXATAS', 'CIÊNCIAS HUMANAS E SOCIAIS', 'CIÊNCIAS SOCIAS APLICADAS', 'ENGENHARIAS', 'LINGUÍSTICA E LETRAS', 'SAÚDE', 'TECNOLOGIAS'),
+    pre_requisito INT UNSIGNED,
     FOREIGN KEY (id_curso) REFERENCES curso(id_curso)
 );
 
 CREATE TABLE pessoa (
     cpf VARCHAR(14) PRIMARY KEY,
-    nome VARCHAR(255),
+    nome VARCHAR(255) NOT NULL,
     data_nascimento DATE
+);
+
+CREATE TABLE pagamento (
+    id_pagamento INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    cpf VARCHAR(14),
+    tipo ENUM('MENSALIDADE', 'SALÁRIO'),
+    valor DECIMAL(10,2),
+    situacao ENUM('PAGO', 'PENDENTE'),
+    CONSTRAINT FK_pagamento_cpf FOREIGN KEY (cpf) REFERENCES pessoa(cpf)
 );
 
 CREATE TABLE professor (
@@ -54,8 +65,6 @@ CREATE TABLE diario (
     id_diario INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     id_turma INT UNSIGNED,
     matricula_aluno INT UNSIGNED,
-    nota DECIMAL(2,2),
-    aprovado ENUM('APROVADO', 'REPROVADO'),
     CONSTRAINT FK_diario_turma FOREIGN KEY (id_turma) REFERENCES turma(id_turma),
     CONSTRAINT FK_diario_aluno FOREIGN KEY (matricula_aluno) REFERENCES aluno(matricula_aluno)
 );
@@ -66,4 +75,21 @@ CREATE TABLE frequencia (
     aluno_presente BOOLEAN DEFAULT FALSE,
     data_aula DATE,
     CONSTRAINT FK_frequencia_diario FOREIGN KEY (id_diario) REFERENCES diario(id_diario)
+);
+
+CREATE TABLE avaliacao ( -- fazer function pra calcular percentual de presença
+    id_avaliacao INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_diario INT UNSIGNED,
+    descricao VARCHAR(255) NOT NULL,
+    nota DECIMAL(4,2),
+    CONSTRAINT FK_avaliacao_diario FOREIGN KEY (id_diario) REFERENCES diario(id_diario)
+);
+
+CREATE TABLE boletim ( -- fazer function pra calcular percentual de presença
+    id_boletim INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_diario INT UNSIGNED,
+    nota_final DECIMAL(4,2),
+    percentual_frequencia DECIMAL(5,2),
+    aprovado ENUM('APROVADO', 'REPROVADO'),
+    CONSTRAINT FK_boletim_diario FOREIGN KEY (id_diario) REFERENCES diario(id_diario)
 );
