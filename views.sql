@@ -3,7 +3,8 @@ USE sigaf;
 -- pra usar é:
 -- SELECT * FROM historico WHERE nome = "";
 -- ou
--- SELECT * FROM historico WHERE matricula_aluno = 0;
+-- SELECT * FROM historico WHERE matricula_aluno = 1;
+
 
 CREATE OR REPLACE VIEW historico AS
 SELECT alu.matricula_aluno AS matricula_aluno,
